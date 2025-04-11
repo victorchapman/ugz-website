@@ -1,27 +1,47 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+
+// Import VideoCarousel dynamically with SSR disabled
+const VideoCarousel = dynamic(() => import("./components/VideoCarousel"), {
+  ssr: false,
+});
+
 export default function Home() {
+  // Use client-side only rendering for the content
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Only render the content on the client to avoid hydration errors
+  if (!isMounted) {
+    return null; // Return nothing during SSR
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 overflow-hidden relative">
       {/* Background metallic gradients */}
-      <div className="absolute inset-0 overflow-hidden">
+      {/* <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-blue-100/30 to-transparent"></div>
         <div className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-t from-gray-200/50 to-transparent rounded-full blur-3xl"></div>
         <div className="absolute -top-20 -left-20 w-64 h-64 bg-gradient-to-br from-blue-200/20 to-indigo-200/20 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-gradient-to-br from-gray-200/30 to-blue-100/20 rounded-full blur-3xl"></div>
-      </div>
+      </div> */}
 
       {/* Enhanced Bottom Grainy Gradients */}
       <div className="absolute bottom-0 left-0 right-0">
         {/* Base gradient layer */}
-        <div className="h-64 bg-gradient-to-t from-blue-100/40 via-indigo-50/20 to-transparent"></div>
+        {/* <div className="h-64 bg-gradient-to-t from-blue-100/40 via-indigo-50/20 to-transparent"></div> */}
 
-        {/* Overlapping shape gradients */}
         <div className="absolute bottom-0 left-0 right-0 h-96 overflow-hidden">
           <div className="absolute -bottom-20 -left-40 w-[140%] h-64 bg-gradient-to-tr from-indigo-200/30 via-blue-100/20 to-transparent rounded-[100%] blur-2xl transform rotate-3"></div>
           <div className="absolute -bottom-10 left-1/4 w-96 h-48 bg-gradient-to-tr from-gray-200/40 via-blue-50/20 to-transparent rounded-full blur-xl transform -rotate-6"></div>
           <div className="absolute -bottom-24 right-1/4 w-[30rem] h-64 bg-gradient-to-tl from-blue-100/30 via-indigo-50/20 to-transparent rounded-full blur-2xl"></div>
         </div>
 
-        {/* Main grainy layer */}
         <div
           className="absolute bottom-0 left-0 right-0 h-80 opacity-25 mix-blend-overlay pointer-events-none"
           style={{
@@ -31,7 +51,6 @@ export default function Home() {
           }}
         ></div>
 
-        {/* Fine grain layer */}
         <div
           className="absolute bottom-0 left-0 right-0 h-48 opacity-20 mix-blend-overlay pointer-events-none"
           style={{
@@ -81,40 +100,9 @@ export default function Home() {
             Sign Up
           </button>
         </div>
-        {/* Video Carousel Section */}
-        <div className="relative w-screen mx-auto left-1/2 right-1/2 -translate-x-1/2 mb-16 overflow-hidden">
-          <div className="flex animate-carousel">
-            {/* First set of videos */}
-            {Array(8)
-              .fill(0)
-              .map((_, i) => (
-                <div
-                  key={`video-1-${i}`}
-                  className="min-w-[250px] md:min-w-[280px] aspect-[9/16] mx-2 rounded-xl bg-gradient-to-b from-blue-100/80 to-indigo-100/80 shadow-lg border border-white/20 overflow-hidden"
-                >
-                  {/* Video placeholder content */}
-                  <div className="w-full h-full"></div>
-                </div>
-              ))}
 
-            {/* Duplicate set for seamless looping */}
-            {Array(8)
-              .fill(0)
-              .map((_, i) => (
-                <div
-                  key={`video-2-${i}`}
-                  className="min-w-[250px] md:min-w-[280px] aspect-[9/16] mx-2 rounded-xl bg-gradient-to-b from-blue-100/80 to-indigo-100/80 shadow-lg border border-white/20 overflow-hidden"
-                >
-                  {/* Video placeholder content */}
-                  <div className="w-full h-full"></div>
-                </div>
-              ))}
-          </div>
-
-          {/* Gradient overlays for fade effect */}
-          <div className="absolute top-0 bottom-0 left-0 w-24 bg-gradient-to-r from-white to-transparent pointer-events-none"></div>
-          <div className="absolute top-0 bottom-0 right-0 w-24 bg-gradient-to-l from-white to-transparent pointer-events-none"></div>
-        </div>
+        {/* Video Carousel Section - now using the client component */}
+        <VideoCarousel />
 
         {/* Footer Links */}
         <div className="mt-16 text-center">
