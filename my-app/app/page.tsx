@@ -63,8 +63,7 @@ export default function Home() {
 
       {/* Main Content Container */}
       <div className="max-w-5xl mx-auto px-6 py-20 relative z-10">
-        {/* Logo and Coming Soon Badge */}
-        <div className="flex flex-col items-center justify-center mb-10">
+        {/* <div className="flex flex-col items-center justify-center mb-10">
           <div className="flex items-center gap-2 mb-4">
             <div className="bg-gradient-to-r from-blue-400 to-indigo-500 rounded-lg w-8 h-8 shadow-md"></div>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 font-bold text-2xl tracking-tight">
@@ -76,7 +75,7 @@ export default function Home() {
               Available in February 2024
             </span>
           </div>
-        </div>
+        </div> */}
 
         {/* Main Heading Section */}
         <div className="text-center mb-12">
@@ -90,7 +89,7 @@ export default function Home() {
         </div>
 
         {/* Email Capture Form */}
-        <div className="flex flex-col md:flex-row gap-3 max-w-md mx-auto mb-16">
+        <div className="flex flex-col md:flex-row gap-3 max-w-md mx-auto">
           <input
             type="email"
             placeholder="Email"

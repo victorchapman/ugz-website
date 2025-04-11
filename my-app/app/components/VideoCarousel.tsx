@@ -189,7 +189,6 @@ export default function VideoCarousel() {
     { id: "video-1-1", src: "https://img.ugz.ai/girl2.mp4" },
     { id: "video-1-2", src: "https://img.ugz.ai/guy1.mp4" },
     { id: "video-1-0", src: "https://img.ugz.ai/girl1.mp4" },
-    { id: "video-1-3", src: "https://img.ugz.ai/girl3.mp4" },
     {
       id: "video-1-4",
       src: "https://img.ugz.ai/8mb.video-ApT-FBUfZW0j (1).mp4",
@@ -197,6 +196,11 @@ export default function VideoCarousel() {
     {
       id: "video-1-5",
       src: "https://img.ugz.ai/aa242e38e1184f48a368b498002c86dc.mp4",
+    },
+    { id: "video-1-3", src: "https://img.ugz.ai/girl3.mp4" },
+    {
+      id: "video-1-6",
+      src: "https://img.ugz.ai/a5e1626464d94d2d9acca6649014ffbc.mp4",
     },
   ];
 
