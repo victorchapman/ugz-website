@@ -99,6 +99,7 @@ const VideoCard = memo(
     onToggle,
     onMouseEnter,
     onMouseLeave,
+    playbackId,
   }: {
     videoId: string;
     videoSrc?: string;
@@ -108,55 +109,188 @@ const VideoCard = memo(
     onToggle: (id: string) => void;
     onMouseEnter: () => void;
     onMouseLeave: () => void;
-  }) => (
-    <div
-      className="video-card min-w-[250px] md:min-w-[280px] aspect-[9/16] mx-3 
-              rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/30
-              backdrop-blur-sm overflow-hidden relative
-              hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]
-              hover:border-white/50 hover:z-20"
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
-      {isPlaceholder ? (
-        <div
-          className={`w-full h-full bg-gradient-to-b ${gradientClass} flex items-center justify-center`}
-        >
-          <span className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              strokeWidth="2"
-            >
-              <polygon points="5 3 19 12 5 21 5 3"></polygon>
-            </svg>
-          </span>
-        </div>
-      ) : (
-        <>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10 pointer-events-none opacity-60"></div>
-          {videoSrc && <VideoPlayer videoSrc={videoSrc} isMuted={isMuted} />}
-          <AudioControl
-            videoId={videoId}
-            isMuted={isMuted}
-            onToggle={onToggle}
-          />
-        </>
-      )}
-    </div>
-  )
+    playbackId?: string;
+  }) => {
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const handlePlayClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setIsPlaying(true);
+    };
+
+    return (
+      <div
+        className="video-card min-w-[250px] md:min-w-[280px] aspect-[9/16] mx-3 
+                rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/30
+                backdrop-blur-sm overflow-hidden relative
+                hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]
+                hover:border-white/50 hover:z-20"
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
+        {isPlaceholder ? (
+          <div
+            className={`w-full h-full bg-gradient-to-b ${gradientClass} flex items-center justify-center`}
+          >
+            <span className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth="2"
+              >
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </span>
+          </div>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10 pointer-events-none opacity-60"></div>
+
+            {isPlaying && playbackId ? (
+              <MuxPlayer
+                playbackId={playbackId}
+                streamType="on-demand"
+                style={{ height: "100%", width: "100%", objectFit: "cover" }}
+                muted={isMuted}
+                autoPlay
+                loop
+                metadata={{
+                  video_title: "UGZ Video",
+                  viewer_user_id: videoId,
+                }}
+              />
+            ) : playbackId ? (
+              <>
+                <div className="w-full h-full">
+                  <img
+                    // src={`https://image.mux.com/${playbackId}/animated.gif?width=320&height=320&start=2&end=5&fps=15`}
+                    src={`https://image.mux.com/${playbackId}/thumbnail.png`}
+                    alt="Video preview"
+                    className="w-full h-full object-cover"
+                  />
+                  <button
+                    className="absolute inset-0 w-full h-full flex items-center justify-center z-20"
+                    onClick={handlePlayClick}
+                  >
+                    <span className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="2"
+                      >
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+              </>
+            ) : videoSrc ? (
+              <>
+                <VideoPlayer videoSrc={videoSrc} isMuted={isMuted} />
+                <button
+                  className="absolute inset-0 w-full h-full flex items-center justify-center z-20"
+                  onClick={handlePlayClick}
+                >
+                  <span className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="white"
+                      strokeWidth="2"
+                    >
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                  </span>
+                </button>
+              </>
+            ) : null}
+
+            <AudioControl
+              videoId={videoId}
+              isMuted={isMuted}
+              onToggle={onToggle}
+            />
+          </>
+        )}
+      </div>
+    );
+  }
 );
 
 VideoCard.displayName = "VideoCard";
 
 export default function VideoCarousel() {
+  // Define video data once to avoid recreating objects on re-render
+  const videoItems = [
+    {
+      id: "ijgaiosjeiogjio",
+      src: "https://img.ugz.ai/08aa3126705949b0a0904319c1eb3ecf (1).mp4",
+      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+    },
+    {
+      id: "ogjeioaj",
+      src: "https://img.ugz.ai/guy1.mp4",
+      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+    },
+    {
+      id: "ogefhsoihge",
+      src: "https://img.ugz.ai/girl1.mp4",
+      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+    },
+    {
+      id: "gosiuoi",
+      src: "https://img.ugz.ai/8mb.video-ApT-FBUfZW0j (1).mp4",
+      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+    },
+    {
+      id: "iogioeaj",
+      src: "https://img.ugz.ai/aa242e38e1184f48a368b498002c86dc.mp4",
+      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+    },
+    {
+      id: "geoioegaoi",
+      src: "https://img.ugz.ai/8mb.video-i5f-IwVLws4N.mp4",
+      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+    },
+    {
+      id: "oigaeoijigj",
+      src: "https://img.ugz.ai/girl3.mp4",
+      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+    },
+    {
+      id: "jgajeojgoiej",
+      src: "https://img.ugz.ai/a5e1626464d94d2d9acca6649014ffbc.mp4",
+      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+    },
+    {
+      id: "hjasdfoijhf",
+      src: "https://img.ugz.ai/girl2.mp4",
+      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+    },
+  ];
+
   // Create a state to track which videos are unmuted
   const [unmutedVideos, setUnmutedVideos] = useState<Record<string, boolean>>(
-    {}
+    () => {
+      // Initialize with all videos unmuted by default
+      const initialState: Record<string, boolean> = {};
+      videoItems.forEach((video) => {
+        initialState[video.id] = true;
+        initialState[`dup-${video.id}`] = true; // Also set duplicates for the second set
+      });
+      return initialState;
+    }
   );
 
   // State to track whether any video is being hovered
@@ -185,35 +319,13 @@ export default function VideoCarousel() {
     forceStop: false,
   });
 
-  // Define video data once to avoid recreating objects on re-render
-  const videoItems = [
-    {
-      id: "ijgaiosjeiogjio",
-      src: "https://img.ugz.ai/08aa3126705949b0a0904319c1eb3ecf (1).mp4",
-    },
-    { id: "ogjeioaj", src: "https://img.ugz.ai/guy1.mp4" },
-    { id: "ogefhsoihge", src: "https://img.ugz.ai/girl1.mp4" },
-    {
-      id: "gosiuoi",
-      src: "https://img.ugz.ai/8mb.video-ApT-FBUfZW0j (1).mp4",
-    },
-    {
-      id: "iogioeaj",
-      src: "https://img.ugz.ai/aa242e38e1184f48a368b498002c86dc.mp4",
-    },
-    {
-      id: "geoioegaoi",
-      src: "https://img.ugz.ai/8mb.video-i5f-IwVLws4N.mp4",
-    },
-    { id: "oigaeoijigj", src: "https://img.ugz.ai/girl3.mp4" },
-    {
-      id: "jgajeojgoiej",
-      src: "https://img.ugz.ai/a5e1626464d94d2d9acca6649014ffbc.mp4",
-    },
-    { id: "hjasdfoijhf", src: "https://img.ugz.ai/girl2.mp4" },
-  ];
+  // Define a proper type for placeholder items
+  interface PlaceholderItem {
+    id: string;
+    gradient: string;
+  }
 
-  const placeholderItems = [
+  const placeholderItems: PlaceholderItem[] = [
     // {
     //   id: "video-1-iiofjeaio",
     //   gradient: "from-indigo-100/80 to-purple-100/80",
@@ -337,14 +449,10 @@ export default function VideoCarousel() {
         {/* First complete set */}
         <div className="flex first-set">
           {videoItems.map((video) => (
-            // <MuxPlayer
-            //   playbackId="H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU"
-            //   metadataVideoTitle="Crumbl Cookies Ad"
-            //   metadataViewerUserId="Placeholder (optional)"
-            // />
             <VideoCard
               key={video.id}
               videoId={video.id}
+              playbackId={video.playbackId}
               videoSrc={video.src}
               isMuted={!unmutedVideos[video.id]}
               onToggle={toggleAudio}
@@ -370,14 +478,10 @@ export default function VideoCarousel() {
         {/* Second identical set - must be exactly the same for perfect loop */}
         <div className="flex second-set">
           {videoItems.map((video) => (
-            // <MuxPlayer
-            //   playbackId="H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU"
-            //   metadataVideoTitle="Crumbl Cookies Ad"
-            //   metadataViewerUserId="Placeholder (optional)"
-            // />
             <VideoCard
               key={`dup-${video.id}`}
               videoId={`dup-${video.id}`}
+              playbackId={video.playbackId}
               videoSrc={video.src}
               isMuted={!unmutedVideos[`dup-${video.id}`]}
               onToggle={toggleAudio}
@@ -418,13 +522,6 @@ export default function VideoCarousel() {
           />
         ))}
       </div> */}
-      <div className="grid grid-cols-4 gap-4">
-        <MuxPlayer
-          playbackId="H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU"
-          metadataVideoTitle="Crumbl Cookies Ad"
-          metadataViewerUserId="Placeholder (optional)"
-        />
-      </div>
     </div>
   );
 }
