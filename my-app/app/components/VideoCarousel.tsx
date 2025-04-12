@@ -1,5 +1,6 @@
 "use client";
 
+import MuxPlayer from "@mux/mux-player-react/lazy";
 import { useState, useRef, memo, useEffect, useCallback } from "react";
 
 // Audio control button component
@@ -186,7 +187,10 @@ export default function VideoCarousel() {
 
   // Define video data once to avoid recreating objects on re-render
   const videoItems = [
-    { id: "hjasdfoijhf", src: "https://img.ugz.ai/girl2.mp4" },
+    {
+      id: "ijgaiosjeiogjio",
+      src: "https://img.ugz.ai/08aa3126705949b0a0904319c1eb3ecf (1).mp4",
+    },
     { id: "ogjeioaj", src: "https://img.ugz.ai/guy1.mp4" },
     { id: "ogefhsoihge", src: "https://img.ugz.ai/girl1.mp4" },
     {
@@ -206,13 +210,14 @@ export default function VideoCarousel() {
       id: "jgajeojgoiej",
       src: "https://img.ugz.ai/a5e1626464d94d2d9acca6649014ffbc.mp4",
     },
+    { id: "hjasdfoijhf", src: "https://img.ugz.ai/girl2.mp4" },
   ];
 
   const placeholderItems = [
-    {
-      id: "video-1-iiofjeaio",
-      gradient: "from-indigo-100/80 to-purple-100/80",
-    },
+    // {
+    //   id: "video-1-iiofjeaio",
+    //   gradient: "from-indigo-100/80 to-purple-100/80",
+    // },
     // { id: "video-1-7", gradient: "from-sky-100/80 to-blue-100/80" },
   ];
 
@@ -231,7 +236,7 @@ export default function VideoCarousel() {
       }
     };
 
-    // Calculate immediately
+    // Calculate immediately/
     calculateWidth();
 
     // Also calculate after a short delay to ensure all resources are loaded
@@ -326,12 +331,17 @@ export default function VideoCarousel() {
   };
 
   return (
-    <div className="relative w-screen mx-auto left-1/2 right-1/2 -translate-x-1/2 py-16 overflow-hidden">
+    <div className="relative w-screen mx-auto left-1/2 right-1/2 -translate-x-1/2 py-8 overflow-hidden">
       {/* Two identical sets of items for seamless infinite scroll */}
       <div ref={carouselRef} className="flex py-4 items-center">
         {/* First complete set */}
         <div className="flex first-set">
           {videoItems.map((video) => (
+            // <MuxPlayer
+            //   playbackId="H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU"
+            //   metadataVideoTitle="Crumbl Cookies Ad"
+            //   metadataViewerUserId="Placeholder (optional)"
+            // />
             <VideoCard
               key={video.id}
               videoId={video.id}
@@ -360,6 +370,11 @@ export default function VideoCarousel() {
         {/* Second identical set - must be exactly the same for perfect loop */}
         <div className="flex second-set">
           {videoItems.map((video) => (
+            // <MuxPlayer
+            //   playbackId="H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU"
+            //   metadataVideoTitle="Crumbl Cookies Ad"
+            //   metadataViewerUserId="Placeholder (optional)"
+            // />
             <VideoCard
               key={`dup-${video.id}`}
               videoId={`dup-${video.id}`}
@@ -387,8 +402,29 @@ export default function VideoCarousel() {
       </div>
 
       {/* Gradient overlays for fade effect - enhanced with deeper fade */}
-      <div className="absolute top-0 bottom-0 left-0 w-32 bg-gradient-to-r from-white via-white/95 to-transparent pointer-events-none"></div>
-      <div className="absolute top-0 bottom-0 right-0 w-32 bg-gradient-to-l from-white via-white/95 to-transparent pointer-events-none"></div>
+      {/* <div className="absolute top-0 bottom-0 left-0 w-32 bg-gradient-to-r from-white via-white/95 to-transparent pointer-events-none"></div>
+      <div className="absolute top-0 bottom-0 right-0 w-32 bg-gradient-to-l from-white via-white/95 to-transparent pointer-events-none"></div> */}
+
+      {/* <div className="grid grid-cols-8 gap-4">
+        {videoItems.map((video) => (
+          <VideoCard
+            key={video.id}
+            videoId={video.id}
+            videoSrc={video.src}
+            isMuted={true}
+            onToggle={toggleAudio}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          />
+        ))}
+      </div> */}
+      <div className="grid grid-cols-4 gap-4">
+        <MuxPlayer
+          playbackId="H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU"
+          metadataVideoTitle="Crumbl Cookies Ad"
+          metadataViewerUserId="Placeholder (optional)"
+        />
+      </div>
     </div>
   );
 }

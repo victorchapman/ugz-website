@@ -22,7 +22,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 overflow-hidden relative">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 overflow-hidden relative flex flex-col">
       {/* Background metallic gradients */}
       {/* <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-blue-100/30 to-transparent"></div>
@@ -62,7 +62,7 @@ export default function Home() {
       </div>
 
       {/* Main Content Container */}
-      <div className="max-w-5xl mx-auto px-6 py-20 relative z-10">
+      <div className="max-w-4xl mx-auto px-6 py-24 md:py-32 relative z-10 flex-grow">
         {/* <div className="flex flex-col items-center justify-center mb-10">
           <div className="flex items-center gap-2 mb-4">
             <div className="bg-gradient-to-r from-blue-400 to-indigo-500 rounded-lg w-8 h-8 shadow-md"></div>
@@ -78,46 +78,58 @@ export default function Home() {
         </div> */}
 
         {/* Main Heading Section */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold pb-4 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800">
-            Find Winning Ads
+            Join the Waitlist – Get 10 Free AI UGC Videos
           </h1>
-          <p className="text-xl text-slate-600 max-w-xl mx-auto font-light">
-            Write your script → Pick an avatar → Generate video. Blah blah write
-            this.
+          <p className="text-xl text-slate-600 max-w-5xl mx-auto font-light mt-2">
+            When we launch, creating UGC will be 98% cheaper, 10,000x faster
+            (ready in minutes), speak 32 languages, and showcase any product —
+            without a single creator.
           </p>
         </div>
 
         {/* Email Capture Form */}
-        <div className="flex flex-col md:flex-row gap-3 max-w-md mx-auto">
-          <input
-            type="email"
-            placeholder="Email"
-            className="flex-grow px-4 py-3 rounded-lg bg-white/80 backdrop-blur-md border border-gray-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent shadow-sm"
-          />
-          <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-medium rounded-lg transition-all duration-300 shadow-md">
-            Sign Up
-          </button>
+        <div className="flex flex-col max-w-md mx-auto text-left">
+          <div className="flex flex-col md:flex-row gap-3 w-full">
+            <input
+              type="email"
+              placeholder="Email"
+              className="flex-grow px-4 py-3 rounded-lg bg-white/80 backdrop-blur-md border border-gray-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent shadow-sm"
+            />
+            <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-medium rounded-lg transition-all duration-300 shadow-md hover:cursor-pointer">
+              Join Waitlist
+            </button>
+          </div>
+          <div className="mt-2 text-left self-start">
+            <a
+              className="text-blue-600 hover:text-blue-800 cursor-pointer text-md underline"
+              href="https://tally.so/r/mKRBkz"
+              target="_blank"
+            >
+              Can't Wait? Get Early Access Today
+            </a>
+          </div>
         </div>
 
         {/* Video Carousel Section - now using the client component */}
         <VideoCarousel />
-
-        {/* Footer Links */}
-        <div className="mt-16 text-center">
-          <div className="flex justify-center gap-6 text-sm text-slate-500">
-            <a href="#" className="hover:text-blue-600 transition-colors">
-              Terms
-            </a>
-            <a href="#" className="hover:text-blue-600 transition-colors">
-              Privacy
-            </a>
-            <a href="#" className="hover:text-blue-600 transition-colors">
-              Contact
-            </a>
-          </div>
-        </div>
       </div>
+
+      {/* Footer Links - now part of the flex layout */}
+      <footer className="w-full py-4 backdrop-blur-sm text-center mt-auto">
+        <div className="flex justify-center gap-6 text-sm text-slate-500">
+          <a href="#" className="hover:text-blue-600 transition-colors">
+            Terms
+          </a>
+          <a href="#" className="hover:text-blue-600 transition-colors">
+            Privacy
+          </a>
+          <a href="#" className="hover:text-blue-600 transition-colors">
+            Contact
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }
