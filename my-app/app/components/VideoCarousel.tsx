@@ -186,27 +186,33 @@ export default function VideoCarousel() {
 
   // Define video data once to avoid recreating objects on re-render
   const videoItems = [
-    { id: "video-1-1", src: "https://img.ugz.ai/girl2.mp4" },
-    { id: "video-1-2", src: "https://img.ugz.ai/guy1.mp4" },
-    { id: "video-1-0", src: "https://img.ugz.ai/girl1.mp4" },
+    { id: "hjasdfoijhf", src: "https://img.ugz.ai/girl2.mp4" },
+    { id: "ogjeioaj", src: "https://img.ugz.ai/guy1.mp4" },
+    { id: "ogefhsoihge", src: "https://img.ugz.ai/girl1.mp4" },
     {
-      id: "video-1-4",
+      id: "gosiuoi",
       src: "https://img.ugz.ai/8mb.video-ApT-FBUfZW0j (1).mp4",
     },
     {
-      id: "video-1-5",
+      id: "iogioeaj",
       src: "https://img.ugz.ai/aa242e38e1184f48a368b498002c86dc.mp4",
     },
-    { id: "video-1-3", src: "https://img.ugz.ai/girl3.mp4" },
     {
-      id: "video-1-6",
+      id: "geoioegaoi",
+      src: "https://img.ugz.ai/8mb.video-i5f-IwVLws4N.mp4",
+    },
+    { id: "oigaeoijigj", src: "https://img.ugz.ai/girl3.mp4" },
+    {
+      id: "jgajeojgoiej",
       src: "https://img.ugz.ai/a5e1626464d94d2d9acca6649014ffbc.mp4",
     },
   ];
 
   const placeholderItems = [
-    { id: "video-1-5", gradient: "from-rose-100/80 to-pink-100/80" },
-    { id: "video-1-6", gradient: "from-indigo-100/80 to-purple-100/80" },
+    {
+      id: "video-1-iiofjeaio",
+      gradient: "from-indigo-100/80 to-purple-100/80",
+    },
     // { id: "video-1-7", gradient: "from-sky-100/80 to-blue-100/80" },
   ];
 
