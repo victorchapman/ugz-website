@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
 // Import VideoCarousel dynamically with SSR disabled
 const VideoCarousel = dynamic(() => import("./components/VideoCarousel"), {
@@ -22,7 +23,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 overflow-hidden relative flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 overflow-x-hidden relative flex flex-col">
       {/* Background metallic gradients */}
       {/* <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-blue-100/30 to-transparent"></div>
@@ -61,71 +62,68 @@ export default function Home() {
         ></div>
       </div>
 
-      {/* Main Content Container */}
-      <div className="max-w-4xl mx-auto px-6 py-24 md:py-32 relative z-10 flex-grow">
-        {/* <div className="flex flex-col items-center justify-center mb-10">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="bg-gradient-to-r from-blue-400 to-indigo-500 rounded-lg w-8 h-8 shadow-md"></div>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 font-bold text-2xl tracking-tight">
-              ugz.ai
-            </span>
+      {/* Main Content */}
+      <div className="flex flex-col flex-grow w-full relative z-10">
+        {/* Upper content with constrained width */}
+        <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-4 sm:pt-6 md:pt-38 sm:mb-8 overflow-hidden">
+          {/* Main Heading Section */}
+          <div className="text-center mb-8 px-1">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold pb-4 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 break-words hyphens-auto">
+              Join the Waitlist – Get 10 Free AI UGC Videos
+            </h1>
+            <p className="text-base sm:text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium mt-2 break-words">
+              When we launch, creating UGC will be 98% cheaper, 10,000x faster
+              (ready in minutes), speak 32 languages, and showcase any product —
+              without a single creator.
+            </p>
           </div>
-          <div className="bg-white/80 backdrop-blur-md px-5 py-2 rounded-full mb-10 shadow-sm border border-gray-200/50">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 text-sm font-medium">
-              Available in February 2024
-            </span>
-          </div>
-        </div> */}
 
-        {/* Main Heading Section */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold pb-4 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800">
-            Join the Waitlist – Get 10 Free AI UGC Videos
-          </h1>
-          <p className="text-xl text-slate-600 max-w-5xl mx-auto font-medium mt-2">
-            When we launch, creating UGC will be 98% cheaper, 10,000x faster
-            (ready in minutes), speak 32 languages, and showcase any product —
-            without a single creator.
-          </p>
-        </div>
-
-        {/* Email Capture Form */}
-        <div className="flex flex-col max-w-md mx-auto text-left">
-          <div className="flex flex-col md:flex-row gap-3 w-full">
-            <input
-              type="email"
-              placeholder="Email"
-              className="flex-grow px-4 py-3 rounded-lg bg-white/80 backdrop-blur-md border border-gray-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent shadow-sm"
-            />
-            <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-medium rounded-lg transition-all duration-300 shadow-md hover:cursor-pointer">
-              Join Waitlist
-            </button>
-          </div>
-          <div className="mt-2 text-left self-start">
-            <a
-              className="text-blue-600 hover:text-blue-800 cursor-pointer text-md underline"
-              href="https://tally.so/r/mKRBkz"
-              target="_blank"
-            >
-              Can't Wait? Get Early Access Today
-            </a>
+          {/* Email Capture Form */}
+          <div className="flex flex-col w-full max-w-md mx-auto text-left ">
+            <div className="flex flex-col md:flex-row gap-3 w-full">
+              <input
+                type="email"
+                placeholder="Email"
+                className="flex-grow px-4 py-3 rounded-lg bg-white/80 backdrop-blur-md border border-gray-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent shadow-sm"
+              />
+              <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-medium rounded-lg transition-all duration-300 shadow-md hover:cursor-pointer whitespace-nowrap">
+                Join Waitlist
+              </button>
+            </div>
+            <div className="mt-2 text-left self-start">
+              <a
+                className="text-blue-600 hover:text-blue-800 cursor-pointer text-xs sm:text-sm underline"
+                href="https://tally.so/r/mKRBkz"
+                target="_blank"
+              >
+                Can't Wait? Get Early Access Today
+              </a>
+            </div>
           </div>
         </div>
 
-        {/* Video Carousel Section - now using the client component */}
-        <VideoCarousel />
+        {/* Full-width Video Carousel Section */}
+        <div className="w-full max-w-none overflow-hidden">
+          <VideoCarousel />
+        </div>
       </div>
 
       {/* Footer Links - now part of the flex layout */}
       <footer className="w-full py-4 backdrop-blur-sm text-center mt-auto">
-        <div className="flex justify-center gap-6 text-sm text-slate-500">
-          <a href="#" className="hover:text-blue-600 transition-colors">
+        <div className="flex justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-slate-500">
+          <Link href="/terms" className="hover:text-blue-600 transition-colors">
             Terms
-          </a>
-          <a href="#" className="hover:text-blue-600 transition-colors">
+          </Link>
+          <Link
+            href="/privacy"
+            className="hover:text-blue-600 transition-colors"
+          >
             Privacy
-          </a>
-          <a href="#" className="hover:text-blue-600 transition-colors">
+          </Link>
+          <a
+            href="mailto:contact@ugz.ai"
+            className="hover:text-blue-600 transition-colors"
+          >
             Contact
           </a>
         </div>
