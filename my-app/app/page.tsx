@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { Dialog } from "@headlessui/react";
+import Confetti from "react-confetti";
+import { useWindowSize } from "react-use";
 
 // Import VideoCarousel dynamically with SSR disabled
 const VideoCarousel = dynamic(() => import("./components/VideoCarousel"), {
@@ -12,10 +15,50 @@ const VideoCarousel = dynamic(() => import("./components/VideoCarousel"), {
 export default function Home() {
   // Use client-side only rendering for the content
   const [isMounted, setIsMounted] = useState(false);
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const { width, height } = useWindowSize();
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!email) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("http://localhost:8000/api/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        setIsSuccess(true);
+        setShowConfetti(true);
+        setEmail("");
+
+        // Hide confetti after 5 seconds
+        setTimeout(() => {
+          setShowConfetti(false);
+        }, 5000);
+      } else {
+        alert("Failed to subscribe. Please try again.");
+      }
+    } catch (error) {
+      alert("An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Only render the content on the client to avoid hydration errors
   if (!isMounted) {
@@ -62,6 +105,16 @@ export default function Home() {
         ></div>
       </div>
 
+      {/* Confetti overlay */}
+      {showConfetti && (
+        <Confetti
+          width={width}
+          height={height}
+          recycle={false}
+          numberOfPieces={500}
+        />
+      )}
+
       {/* Main Content */}
       <div className="flex flex-col flex-grow w-full relative z-10">
         {/* Upper content with constrained width */}
@@ -79,15 +132,25 @@ export default function Home() {
           </div>
 
           {/* Email Capture Form */}
-          <div className="flex flex-col w-full max-w-md mx-auto text-left ">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col w-full max-w-md mx-auto text-left"
+          >
             <div className="flex flex-col md:flex-row gap-3 w-full">
               <input
                 type="email"
                 placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
                 className="flex-grow px-4 py-3 rounded-lg bg-white/80 backdrop-blur-md border border-gray-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent shadow-sm"
               />
-              <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-medium rounded-lg transition-all duration-300 shadow-md hover:cursor-pointer whitespace-nowrap">
-                Join Waitlist
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-medium rounded-lg transition-all duration-300 shadow-md hover:cursor-pointer whitespace-nowrap disabled:opacity-70"
+              >
+                {isSubmitting ? "Submitting..." : "Join Waitlist"}
               </button>
             </div>
             <div className="mt-2 text-left self-start">
@@ -99,7 +162,7 @@ export default function Home() {
                 Can't Wait? Get Early Access Today
               </a>
             </div>
-          </div>
+          </form>
         </div>
 
         {/* Full-width Video Carousel Section */}
@@ -128,6 +191,32 @@ export default function Home() {
           </a>
         </div>
       </footer>
+
+      {/* Success Dialog */}
+      <Dialog
+        open={isSuccess}
+        onClose={() => setIsSuccess(false)}
+        className="relative z-50"
+      >
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <Dialog.Title className="text-xl font-medium text-gray-900 mb-2">
+              Thank you for joining!
+            </Dialog.Title>
+            <Dialog.Description className="text-gray-600 mb-4">
+              We've added you to our waitlist. You'll be among the first to know
+              when we launch!
+            </Dialog.Description>
+            <button
+              onClick={() => setIsSuccess(false)}
+              className="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-medium rounded-lg transition-all duration-300"
+            >
+              Got it
+            </button>
+          </Dialog.Panel>
+        </div>
+      </Dialog>
     </div>
   );
 }
