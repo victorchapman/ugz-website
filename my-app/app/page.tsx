@@ -82,7 +82,7 @@ export default function Home() {
           <h1 className="text-4xl md:text-5xl font-bold pb-4 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800">
             Join the Waitlist – Get 10 Free AI UGC Videos
           </h1>
-          <p className="text-xl text-slate-600 max-w-5xl mx-auto font-light mt-2">
+          <p className="text-xl text-slate-600 max-w-5xl mx-auto font-medium mt-2">
             When we launch, creating UGC will be 98% cheaper, 10,000x faster
             (ready in minutes), speak 32 languages, and showcase any product —
             without a single creator.

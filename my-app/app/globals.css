@@ -86,4 +86,16 @@
 mux-player {
   --seek-backward-button: none !important;
   --seek-forward-button: none !important;
+  --controls: none !important;
+  --time-display: none !important;
+  --time-range: none !important;
+  --play-button: none !important;
+  --mute-button: none !important;
+  --captions-button: none !important;
+  --airplay-button: none !important;
+  --pip-button: none !important;
+  --fullscreen-button: none !important;
+  --cast-button: none !important;
+  --playback-rate-button: none !important;
+  --volume-range: none !important;
 }

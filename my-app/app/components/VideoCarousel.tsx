@@ -112,10 +112,27 @@ const VideoCard = memo(
     playbackId?: string;
   }) => {
     const [isPlaying, setIsPlaying] = useState(false);
+    const [isPaused, setIsPaused] = useState(false);
+    const playerRef = useRef<HTMLMediaElement | null>(null);
 
     const handlePlayClick = (e: React.MouseEvent) => {
       e.stopPropagation();
       setIsPlaying(true);
+    };
+
+    const handleMuxPlayerClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
+
+      // Access the underlying media element for playback control
+      const mediaEl = playerRef.current;
+      if (mediaEl) {
+        if (isPaused) {
+          mediaEl.play();
+        } else {
+          mediaEl.pause();
+        }
+        setIsPaused(!isPaused);
+      }
     };
 
     return (
@@ -151,24 +168,51 @@ const VideoCard = memo(
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10 pointer-events-none opacity-60"></div>
 
             {isPlaying && playbackId ? (
-              <MuxPlayer
-                playbackId={playbackId}
-                streamType="on-demand"
-                style={{ height: "100%", width: "100%", objectFit: "cover" }}
-                muted={isMuted}
-                autoPlay
-                loop
-                metadata={{
-                  video_title: "UGZ Video",
-                  viewer_user_id: videoId,
-                }}
-              />
+              <div className="w-full h-full" onClick={handleMuxPlayerClick}>
+                <MuxPlayer
+                  playbackId={playbackId}
+                  streamType="on-demand"
+                  style={{ height: "100%", width: "100%", objectFit: "cover" }}
+                  muted={isMuted}
+                  autoPlay
+                  loop
+                  metadata={{
+                    video_title: "UGZ Video",
+                    viewer_user_id: videoId,
+                  }}
+                  onLoadedData={(e) => {
+                    // Get the media element when the player loads
+                    const target = e.target as HTMLMediaElement;
+                    playerRef.current = target;
+                  }}
+                />
+                {isPaused && (
+                  <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+                    <span className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                      </svg>
+                    </span>
+                  </div>
+                )}
+              </div>
             ) : playbackId ? (
               <>
                 <div className="w-full h-full">
                   <img
                     // src={`https://image.mux.com/${playbackId}/animated.gif?width=320&height=320&start=2&end=5&fps=15`}
-                    src={`https://image.mux.com/${playbackId}/thumbnail.png`}
+                    // src={`https://image.mux.com/${playbackId}/thumbnail.png?time=5`}
+                    src={`https://image.mux.com/${playbackId}/animated.gif?start=2&end=4`} // 5 and 7
                     alt="Video preview"
                     className="w-full h-full object-cover"
                   />
@@ -236,47 +280,47 @@ export default function VideoCarousel() {
     {
       id: "ijgaiosjeiogjio",
       src: "https://img.ugz.ai/08aa3126705949b0a0904319c1eb3ecf (1).mp4",
-      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+      playbackId: "m8GRybxmZ1aJAbUXWCNAndWl302gxM7g6MvyJOpf4X1Y",
     },
     {
       id: "ogjeioaj",
       src: "https://img.ugz.ai/guy1.mp4",
-      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+      playbackId: "4UdpDA6CgLn2K02Bwlkpypd301n8zi02QXiXdcQQ00Dn3gw",
     },
     {
       id: "ogefhsoihge",
       src: "https://img.ugz.ai/girl1.mp4",
-      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+      playbackId: "f01nJJR0001eddwbXHuWBjBh42bz17jwPz9QoYaVJ01W100k",
     },
     {
       id: "gosiuoi",
       src: "https://img.ugz.ai/8mb.video-ApT-FBUfZW0j (1).mp4",
-      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+      playbackId: "pCpwsodxceAkHocVSKL8A4Otx02OCH801bYq9X1hxTmWY",
     },
     {
       id: "iogioeaj",
       src: "https://img.ugz.ai/aa242e38e1184f48a368b498002c86dc.mp4",
-      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+      playbackId: "WsxVwxsgr802POKjrgf8DSnZuKAb3VMLH01aM00fBRnsFU",
     },
     {
       id: "geoioegaoi",
       src: "https://img.ugz.ai/8mb.video-i5f-IwVLws4N.mp4",
-      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+      playbackId: "o2IZRzkr7md0189RphpekDMj4VumO2SQM2m4JFfbFcy4",
     },
     {
       id: "oigaeoijigj",
       src: "https://img.ugz.ai/girl3.mp4",
-      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+      playbackId: "Wfp82KRIbX2U1NaHDkpCWmPHOTT7J3F4wf9mzHSy02P8",
     },
     {
       id: "jgajeojgoiej",
       src: "https://img.ugz.ai/a5e1626464d94d2d9acca6649014ffbc.mp4",
-      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+      playbackId: "uHc5hTdVErhDlaMOK6zLUH1a648pkcbjtq8gSsksWx00",
     },
     {
       id: "hjasdfoijhf",
       src: "https://img.ugz.ai/girl2.mp4",
-      playbackId: "H5TNi9qNWVUCM5XDZp01BCzpb02Ad00GgWItLIV4okNrDU",
+      playbackId: "fcubkczc0001P02jbm02GHrCJ8wz00C02xZ2a7GzOQEr3I1ZA",
     },
   ];
 
