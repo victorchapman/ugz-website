@@ -25,7 +25,7 @@ export default function Home() {
     setIsMounted(true);
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!email) return;
@@ -33,7 +33,7 @@ export default function Home() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/subscribe", {
+      const response = await fetch("https://api.ugz.ai/api/subscribe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -121,10 +121,12 @@ export default function Home() {
         <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-4 sm:pt-6 md:pt-38 sm:mb-8 overflow-hidden">
           {/* Main Heading Section */}
           <div className="text-center mb-8 px-1">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold pb-4 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 break-words hyphens-auto">
-              Join the Waitlist – Get 10 Free AI UGC Videos
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold pb-4 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 break-words hyphens-auto leading-tight">
+              Join the Waitlist
+              <br className="my-1" />
+              Get 10 Free AI UGC Videos
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-medium mt-2 break-words">
+            <p className="text-base sm:text-lg md:text-lg text-slate-600 max-w-3xl mx-auto font-medium  break-words leading-relaxed">
               When we launch, creating UGC will be 98% cheaper, 10,000x faster
               (ready in minutes), speak 32 languages, and showcase any product —
               without a single creator.
@@ -155,7 +157,7 @@ export default function Home() {
             </div>
             <div className="mt-2 text-left self-start">
               <a
-                className="text-blue-600 hover:text-blue-800 cursor-pointer text-xs sm:text-sm underline"
+                className="text-gray-600 hover:text-gray-800 cursor-pointer text-xs sm:text-sm"
                 href="https://tally.so/r/mKRBkz"
                 target="_blank"
               >

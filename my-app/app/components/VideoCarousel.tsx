@@ -100,6 +100,8 @@ const VideoCard = memo(
     onMouseEnter,
     onMouseLeave,
     playbackId,
+    currentlyPlayingId,
+    setCurrentlyPlayingId,
   }: {
     videoId: string;
     videoSrc?: string;
@@ -110,14 +112,28 @@ const VideoCard = memo(
     onMouseEnter: () => void;
     onMouseLeave: () => void;
     playbackId?: string;
+    currentlyPlayingId: string | null;
+    setCurrentlyPlayingId: (id: string | null) => void;
   }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
     const playerRef = useRef<HTMLMediaElement | null>(null);
 
+    // Check if this video should be playing or paused based on currentlyPlayingId
+    useEffect(() => {
+      const mediaEl = playerRef.current;
+      if (mediaEl && isPlaying) {
+        if (currentlyPlayingId !== videoId) {
+          mediaEl.pause();
+          setIsPaused(true);
+        }
+      }
+    }, [currentlyPlayingId, videoId, isPlaying]);
+
     const handlePlayClick = (e: React.MouseEvent) => {
       e.stopPropagation();
       setIsPlaying(true);
+      setCurrentlyPlayingId(videoId);
     };
 
     const handleMuxPlayerClick = (e: React.MouseEvent) => {
@@ -128,20 +144,21 @@ const VideoCard = memo(
       if (mediaEl) {
         if (isPaused) {
           mediaEl.play();
+          setIsPaused(false);
+          setCurrentlyPlayingId(videoId);
         } else {
           mediaEl.pause();
+          setIsPaused(true);
+          setCurrentlyPlayingId(null);
         }
-        setIsPaused(!isPaused);
       }
     };
 
     return (
       <div
         className="video-card min-w-[250px] md:min-w-[280px] aspect-[9/16] mx-3 
-                rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/30
-                backdrop-blur-sm overflow-hidden relative
-                hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]
-                hover:border-white/50 hover:z-20"
+                rounded-2xl shadow-sm border border-white/30
+                backdrop-blur-sm overflow-hidden relative cursor-pointer"
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
@@ -212,7 +229,7 @@ const VideoCard = memo(
                   <img
                     // src={`https://image.mux.com/${playbackId}/animated.gif?width=320&height=320&start=2&end=5&fps=15`}
                     // src={`https://image.mux.com/${playbackId}/thumbnail.png?time=5`}
-                    src={`https://image.mux.com/${playbackId}/animated.gif?start=2&end=4`} // 5 and 7
+                    src={`https://image.mux.com/${playbackId}/animated.gif?start=4&end=6`} // 5 and 7
                     alt="Video preview"
                     className="w-full h-full object-cover"
                   />
@@ -285,7 +302,7 @@ export default function VideoCarousel() {
     {
       id: "ogjeioaj",
       src: "https://img.ugz.ai/guy1.mp4",
-      playbackId: "4UdpDA6CgLn2K02Bwlkpypd301n8zi02QXiXdcQQ00Dn3gw",
+      playbackId: "OMBGOllOd3SgyBTtKk45QbBcUekqdY701CI86Z8OyWhM",
     },
     {
       id: "ogefhsoihge",
@@ -312,17 +329,25 @@ export default function VideoCarousel() {
       src: "https://img.ugz.ai/girl3.mp4",
       playbackId: "Wfp82KRIbX2U1NaHDkpCWmPHOTT7J3F4wf9mzHSy02P8",
     },
-    {
-      id: "jgajeojgoiej",
-      src: "https://img.ugz.ai/a5e1626464d94d2d9acca6649014ffbc.mp4",
-      playbackId: "uHc5hTdVErhDlaMOK6zLUH1a648pkcbjtq8gSsksWx00",
-    },
-    {
-      id: "hjasdfoijhf",
-      src: "https://img.ugz.ai/girl2.mp4",
-      playbackId: "fcubkczc0001P02jbm02GHrCJ8wz00C02xZ2a7GzOQEr3I1ZA",
-    },
+    // {
+    //   id: "jgajeojgoiej",
+    //   src: "https://img.ugz.ai/a5e1626464d94d2d9acca6649014ffbc.mp4",
+    //   playbackId: "uHc5hTdVErhDlaMOK6zLUH1a648pkcbjtq8gSsksWx00",
+    // },
+    // {
+    //   id: "hjasdfoijhf",
+    //   src: "https://img.ugz.ai/girl2.mp4",
+    //   playbackId: "fcubkczc0001P02jbm02GHrCJ8wz00C02xZ2a7GzOQEr3I1ZA",
+    // },
   ];
+
+  // State to track the currently playing video ID
+  const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(
+    null
+  );
+
+  // Grid view toggle state
+  const [showGrid, setShowGrid] = useState(false);
 
   // Create a state to track which videos are unmuted
   const [unmutedVideos, setUnmutedVideos] = useState<Record<string, boolean>>(
@@ -416,8 +441,8 @@ export default function VideoCarousel() {
 
       const elapsed = timestamp - animationRef.current.lastTimestamp;
 
-      // Check both isPaused state and the forceStop flag
-      if (!isPaused && !animationRef.current.forceStop) {
+      // Always animate regardless of isPaused state - only respect forceStop
+      if (!animationRef.current.forceStop) {
         // Move by a proportional amount based on elapsed time
         const pixelsToMove = (elapsed / 1000) * speed;
 
@@ -443,7 +468,7 @@ export default function VideoCarousel() {
       animationRef.current.lastTimestamp = timestamp;
       requestAnimationFrame(animate);
     },
-    [isPaused, speed]
+    [speed] // Remove 'isPaused' from dependencies
   );
 
   // Start the animation
@@ -462,110 +487,220 @@ export default function VideoCarousel() {
 
   // Event handlers for mouse interactions - ensure immediate pause with no delay
   const handleMouseEnter = () => {
-    // Store the exact current position before pausing
-    animationRef.current.lastTimestamp = 0; // Reset timestamp to prevent jumps
-    setIsPaused(true);
-
-    // Force immediate update of isPaused state by using a flag reference
-    // This prevents any animation updates before React state updates
-    animationRef.current.forceStop = true;
-
-    // Immediately update to ensure no transition delay
-    if (carouselRef.current) {
-      // Apply the exact current position to prevent any additional movement
-      const currentPosition = animationRef.current.position;
-      carouselRef.current.style.transform = `translateX(${currentPosition}px)`;
-    }
+    // We no longer pause the carousel on hover
+    // But keep the function for other potential uses like video controls
   };
 
   const handleMouseLeave = () => {
-    // Remove force stop flag
-    animationRef.current.forceStop = false;
-    // Reset timestamp to prevent jumps when resuming
-    animationRef.current.lastTimestamp = 0;
-    setIsPaused(false);
+    // We no longer unpause the carousel on mouse leave
+    // But keep the function for other potential uses like video controls
+  };
+
+  const toggleGridView = () => {
+    const newShowGrid = !showGrid;
+    setShowGrid(newShowGrid);
+
+    // Reset position when switching to grid view
+    if (newShowGrid) {
+      // Reset animation position when switching to grid
+      animationRef.current.position = 0;
+      // Only stop animation when in grid view
+      animationRef.current.forceStop = true;
+
+      // Reset transform directly on the carousel element
+      if (carouselRef.current) {
+        carouselRef.current.style.transform = "translateX(0)";
+      }
+    } else {
+      // Resume animation when switching back to carousel
+      animationRef.current.forceStop = false;
+      animationRef.current.lastTimestamp = 0;
+    }
   };
 
   return (
-    <div className="relative w-screen mx-auto left-1/2 right-1/2 -translate-x-1/2 py-8 overflow-hidden">
-      {/* Two identical sets of items for seamless infinite scroll */}
-      <div ref={carouselRef} className="flex py-4 items-center">
-        {/* First complete set */}
-        <div className="flex first-set">
-          {videoItems.map((video) => (
-            <VideoCard
-              key={video.id}
-              videoId={video.id}
-              playbackId={video.playbackId}
-              videoSrc={video.src}
-              isMuted={!unmutedVideos[video.id]}
-              onToggle={toggleAudio}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            />
-          ))}
-
-          {placeholderItems.map((item) => (
-            <VideoCard
-              key={item.id}
-              videoId={item.id}
-              isPlaceholder
-              gradientClass={item.gradient}
-              isMuted={true}
-              onToggle={toggleAudio}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            />
-          ))}
-        </div>
-
-        {/* Second identical set - must be exactly the same for perfect loop */}
-        <div className="flex second-set">
-          {videoItems.map((video) => (
-            <VideoCard
-              key={`dup-${video.id}`}
-              videoId={`dup-${video.id}`}
-              playbackId={video.playbackId}
-              videoSrc={video.src}
-              isMuted={!unmutedVideos[`dup-${video.id}`]}
-              onToggle={toggleAudio}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            />
-          ))}
-
-          {placeholderItems.map((item) => (
-            <VideoCard
-              key={`dup-${item.id}`}
-              videoId={`dup-${item.id}`}
-              isPlaceholder
-              gradientClass={item.gradient}
-              isMuted={true}
-              onToggle={toggleAudio}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            />
-          ))}
-        </div>
+    <div className="relative w-screen mx-auto left-1/2 right-1/2 -translate-x-1/2 pb-24 overflow-hidden">
+      {/* Toggle button - only visible on desktop */}
+      <div className="hidden lg:flex justify-center">
+        <button
+          onClick={toggleGridView}
+          className={`flex items-center gap-2 px-4 py-2 rounded-md text-gray-600 transition-all cursor-pointer
+            ${
+              showGrid
+                ? "bg-gray-200/80 shadow-inner"
+                : "bg-gray-100/70 hover:bg-gray-200/80 border-transparent"
+            }`}
+        >
+          {showGrid ? (
+            <>
+              <span>View Carousel</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M21 12H3" />
+                <path d="M12 3v18" />
+              </svg>
+            </>
+          ) : (
+            <>
+              <span>View All</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+              </svg>
+            </>
+          )}
+        </button>
       </div>
 
-      {/* Gradient overlays for fade effect - enhanced with deeper fade */}
-      {/* <div className="absolute top-0 bottom-0 left-0 w-32 bg-gradient-to-r from-white via-white/95 to-transparent pointer-events-none"></div>
-      <div className="absolute top-0 bottom-0 right-0 w-32 bg-gradient-to-l from-white via-white/95 to-transparent pointer-events-none"></div> */}
-
-      {/* <div className="grid grid-cols-8 gap-4">
+      {/* Mobile layout - 1 column grid */}
+      <div className="sm:hidden grid grid-cols-1 gap-4 px-4">
         {videoItems.map((video) => (
           <VideoCard
             key={video.id}
             videoId={video.id}
+            playbackId={video.playbackId}
             videoSrc={video.src}
-            isMuted={true}
+            isMuted={!unmutedVideos[video.id]}
             onToggle={toggleAudio}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
+            currentlyPlayingId={currentlyPlayingId}
+            setCurrentlyPlayingId={setCurrentlyPlayingId}
           />
         ))}
-      </div> */}
+      </div>
+
+      {/* Tablet layout - 2 column grid */}
+      <div className="hidden sm:grid lg:hidden grid-cols-2 gap-4 px-4">
+        {videoItems.map((video) => (
+          <VideoCard
+            key={video.id}
+            videoId={video.id}
+            playbackId={video.playbackId}
+            videoSrc={video.src}
+            isMuted={!unmutedVideos[video.id]}
+            onToggle={toggleAudio}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            currentlyPlayingId={currentlyPlayingId}
+            setCurrentlyPlayingId={setCurrentlyPlayingId}
+          />
+        ))}
+      </div>
+
+      {/* Desktop layout - togglable between carousel and grid */}
+      <div className="hidden lg:block mt-4">
+        {/* Grid view - 4 columns */}
+        {showGrid ? (
+          <div className="grid grid-cols-4 gap-6 px-20 max-w-7xl mx-auto">
+            {videoItems.map((video) => (
+              <VideoCard
+                key={video.id}
+                videoId={video.id}
+                playbackId={video.playbackId}
+                videoSrc={video.src}
+                isMuted={!unmutedVideos[video.id]}
+                onToggle={toggleAudio}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                currentlyPlayingId={currentlyPlayingId}
+                setCurrentlyPlayingId={setCurrentlyPlayingId}
+              />
+            ))}
+          </div>
+        ) : (
+          /* Carousel view */
+          <div ref={carouselRef} className="flex py-4 items-center">
+            {/* First complete set */}
+            <div className="flex first-set">
+              {videoItems.map((video) => (
+                <VideoCard
+                  key={video.id}
+                  videoId={video.id}
+                  playbackId={video.playbackId}
+                  videoSrc={video.src}
+                  isMuted={!unmutedVideos[video.id]}
+                  onToggle={toggleAudio}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                  currentlyPlayingId={currentlyPlayingId}
+                  setCurrentlyPlayingId={setCurrentlyPlayingId}
+                />
+              ))}
+
+              {placeholderItems.map((item) => (
+                <VideoCard
+                  key={item.id}
+                  videoId={item.id}
+                  isPlaceholder
+                  gradientClass={item.gradient}
+                  isMuted={true}
+                  onToggle={toggleAudio}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                  currentlyPlayingId={currentlyPlayingId}
+                  setCurrentlyPlayingId={setCurrentlyPlayingId}
+                />
+              ))}
+            </div>
+
+            {/* Second identical set - must be exactly the same for perfect loop */}
+            <div className="flex second-set">
+              {videoItems.map((video) => (
+                <VideoCard
+                  key={`dup-${video.id}`}
+                  videoId={`dup-${video.id}`}
+                  playbackId={video.playbackId}
+                  videoSrc={video.src}
+                  isMuted={!unmutedVideos[`dup-${video.id}`]}
+                  onToggle={toggleAudio}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                  currentlyPlayingId={currentlyPlayingId}
+                  setCurrentlyPlayingId={setCurrentlyPlayingId}
+                />
+              ))}
+
+              {placeholderItems.map((item) => (
+                <VideoCard
+                  key={`dup-${item.id}`}
+                  videoId={`dup-${item.id}`}
+                  isPlaceholder
+                  gradientClass={item.gradient}
+                  isMuted={true}
+                  onToggle={toggleAudio}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                  currentlyPlayingId={currentlyPlayingId}
+                  setCurrentlyPlayingId={setCurrentlyPlayingId}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

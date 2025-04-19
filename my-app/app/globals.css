@@ -22,9 +22,7 @@
 /* Video hover effects */
 .video-card {
   /* Use modern CSS properties that don't affect parent transforms */
-  transition: scale 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), 
-              box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), 
-              border 0.3s ease;
+  transition: border 0.3s ease;
   position: relative;
   overflow: hidden;
   transform-origin: center center;
@@ -34,13 +32,9 @@
   -webkit-backface-visibility: hidden;
 }
 
-/* Use scale instead of transform to avoid interfering with parent's translateX */
+/* Remove the scale/pop-out effect */
 .video-card:hover {
-  scale: 1.08;
-  box-shadow: 0 30px 60px -12px rgba(50, 50, 93, 0.25),
-              0 18px 36px -18px rgba(0, 0, 0, 0.3),
-              0 -12px 36px -8px rgba(0, 0, 0, 0.025);
-  z-index: 10;
+  /* No scale or shadow effects */
 }
 
 /* Ensure the video scales along with the container */
