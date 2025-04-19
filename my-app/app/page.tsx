@@ -123,14 +123,14 @@ export default function Home() {
           <div className="text-center mb-8 px-1">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold pb-4 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 break-words hyphens-auto leading-tight">
               Join the Waitlist
-              <br className="my-1" />
+              <br className="" />
               Get 10 Free AI UGC Videos
             </h1>
-            <p className="text-base sm:text-lg md:text-lg text-slate-600 max-w-3xl mx-auto font-medium  break-words leading-relaxed">
+            {/* <p className="text-base sm:text-lg md:text-lg text-slate-600 max-w-3xl mx-auto font-medium  break-words leading-relaxed">
               When we launch, creating UGC will be 98% cheaper, 10,000x faster
               (ready in minutes), speak 32 languages, and showcase any product —
               without a single creator.
-            </p>
+            </p> */}
           </div>
 
           {/* Email Capture Form */}
